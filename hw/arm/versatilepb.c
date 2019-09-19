@@ -299,6 +299,7 @@ static void versatile_init(MachineState *machine, int board_id)
 
     sysbus_create_simple("sp804", 0x101e2000, pic[4]);
     sysbus_create_simple("sp804", 0x101e3000, pic[5]);
+    sysbus_create_simple("sp805", 0x301e0000, pic[4]);
 
     sysbus_create_simple("pl061", 0x101e4000, pic[6]);
     sysbus_create_simple("pl061", 0x101e5000, pic[7]);
