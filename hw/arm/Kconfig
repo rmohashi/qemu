@@ -237,6 +237,7 @@ config SX1
 config VERSATILE
     bool
     select ARM_TIMER # sp804
+    select CUSTOM_COMPONENT #sp805
     select PFLASH_CFI01
     select LSI_SCSI_PCI
     select PL050  # keyboard/mouse
