@@ -54,6 +54,9 @@ static uint32_t arm_timer_read(void *opaque, hwaddr offset)
 {
     arm_timer_state *s = (arm_timer_state *)opaque;
 
+    FILE *fp;
+    int value;
+
     switch (offset >> 2) {
     case 0: /* TimerLoad */
     case 6: /* TimerBGLoad */
@@ -68,6 +71,11 @@ static uint32_t arm_timer_read(void *opaque, hwaddr offset)
         if ((s->control & TIMER_CTRL_IE) == 0)
             return 0;
         return s->int_level;
+    case 7: /* */
+        fp = fopen("/tmp/new_port.txt", "r");
+        value = fgetc(fp);
+        fclose(fp);
+        return (uint32_t) value;
     default:
         qemu_log_mask(LOG_GUEST_ERROR,
                       "%s: Bad offset %x\n", __func__, (int)offset);
@@ -107,6 +115,7 @@ static void arm_timer_write(void *opaque, hwaddr offset,
     case 1: /* TimerValue */
         /* ??? Linux seems to want to write to this readonly register.
            Ignore it.  */
+
         break;
     case 2: /* TimerControl */
         if (s->control & TIMER_CTRL_ENABLE) {
