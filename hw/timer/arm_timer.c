@@ -53,12 +53,15 @@ static void arm_timer_update(arm_timer_state *s)
 static uint32_t arm_timer_read(void *opaque, hwaddr offset)
 {
     arm_timer_state *s = (arm_timer_state *)opaque;
+    uint64_t timer_value;
 
     switch (offset >> 2) {
     case 0: /* TimerLoad */
     case 6: /* TimerBGLoad */
         return s->limit;
     case 1: /* TimerValue */
+        timer_value = ptimer_get_count(s->timer);
+        printf("%" PRIu64 "\n", timer_value);
         return ptimer_get_count(s->timer);
     case 2: /* TimerControl */
         return s->control;

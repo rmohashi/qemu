@@ -18,6 +18,10 @@
 #include "qemu/module.h"
 #include "qemu/log.h"
 
+#include <stdlib.h>
+#include <stdio.h>
+#include <signal.h> /*for signal() and raise()*/
+
 /* Common timer implementation.  */
 
 #define TIMER_CTRL_ONESHOT (1 << 0)
@@ -311,10 +315,25 @@ static const VMStateDescription vmstate_sp805 = {
         VMSTATE_INT32_ARRAY(level, SP805State, 2),
         VMSTATE_END_OF_LIST()}};
 
+static void signal_handler(int signum)
+{
+    printf("Tratando sinal 12...\n");
+
+    SP805State *s = SP805(obj);
+    SysBusDevice *sbd = SYS_BUS_DEVICE(obj);
+
+    sysbus_init_irq(sbd, &s->irq);
+
+    qemu_irq_raise(s->irq);
+}
+
 static void sp805_init(Object *obj)
 {
     SP805State *s = SP805(obj);
     SysBusDevice *sbd = SYS_BUS_DEVICE(obj);
+
+    //Handle SIGUSR2 with hello
+    signal(SIGUSR2, signal_handler);
 
     sysbus_init_irq(sbd, &s->irq);
     memory_region_init_io(&s->iomem, obj, &sp805_ops, s,
