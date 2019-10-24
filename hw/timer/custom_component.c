@@ -318,13 +318,6 @@ static const VMStateDescription vmstate_sp805 = {
 static void signal_handler(int signum)
 {
     printf("Tratando sinal 12...\n");
-
-    SP805State *s = SP805(obj);
-    SysBusDevice *sbd = SYS_BUS_DEVICE(obj);
-
-    sysbus_init_irq(sbd, &s->irq);
-
-    qemu_irq_raise(s->irq);
 }
 
 static void sp805_init(Object *obj)
